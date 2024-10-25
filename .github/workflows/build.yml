@@ -65,6 +65,7 @@ jobs:
         shell: cmd
         run: ./src/build_official.cmd
         env:
+          NuGetAudit: false
           RuntimeTestsEnabled: true
           SigningKeyVaultUri:  ${{ github.ref == 'refs/heads/master' && secrets.WIX_SIGNING_VAULTURI || '' }}
           SigningTenantId:  ${{ github.ref == 'refs/heads/master' && secrets.WIX_SIGNING_TENANTID || '' }}
