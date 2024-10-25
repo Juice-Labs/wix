@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - master
+    tags:
+      - 'v*' # Trigger on tag pushes for versions, e.g. 'v6.0.0'
   pull_request:
     branches:
       - main
@@ -77,11 +79,11 @@ jobs:
       #   shell: cmd
       #   run: 7z a build\testresults.zip @src\testresultfilelist.txt
 
-      - name: Save build
-        uses: actions/upload-artifact@v3
-        with:
-          name: artifacts
-          path: build/artifacts/
+      # - name: Save build
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: artifacts
+      #     path: build/artifacts/
 
       # - name: Collect integration test logs
       #   if: always()
@@ -109,3 +111,26 @@ jobs:
       # - name: Push to GitHub Packages
       #   if: github.event_name == 'push' && github.repository_owner == 'wixtoolset' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
       #   run: dotnet nuget push "build/artifacts/**/*.nupkg" --source https://nuget.pkg.github.com/wixtoolset/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+
+      - name: Create release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload artifacts to release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/artifacts/*.nupkg
+          asset_name: wix-${{ github.ref_name }}.zip
+          asset_content_type: application/zip
