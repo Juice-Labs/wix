@@ -121,6 +121,8 @@ jobs:
           release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
+          owner: Juice-Labs
+          repo: wix
 
       - name: Upload artifacts to release
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
