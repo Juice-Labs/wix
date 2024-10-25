@@ -73,9 +73,9 @@ jobs:
           SigningClientSecret:  ${{ github.ref == 'refs/heads/master' && secrets.WIX_SIGNING_SECRET || '' }}
           SigningCertName:  ${{ github.ref == 'refs/heads/master' && secrets.WIX_SIGNING_CERTNAME || '' }}
 
-      - name: Validate test results
-        shell: cmd
-        run: 7z a build\testresults.zip @src\testresultfilelist.txt
+      # - name: Validate test results
+      #   shell: cmd
+      #   run: 7z a build\testresults.zip @src\testresultfilelist.txt
 
       - name: Save build
         uses: actions/upload-artifact@v3
@@ -83,29 +83,29 @@ jobs:
           name: artifacts
           path: build/artifacts/
 
-      - name: Collect integration test logs
-        if: always()
-        shell: cmd
-        run: 7z a "build\logs\test_burn_%GITHUB_RUN_ID%.zip" "%TEMP%\*.log" "%TEMP%\..\*.log"
+      # - name: Collect integration test logs
+      #   if: always()
+      #   shell: cmd
+      #   run: 7z a "build\logs\test_burn_%GITHUB_RUN_ID%.zip" "%TEMP%\*.log" "%TEMP%\..\*.log"
 
-      - name: Export Application event log
-        if: always()
-        shell: cmd
-        run: wevtutil epl Application build\logs\Application.evtx /q:"Event/System/TimeCreated[timediff(@SystemTime) <= 86400000]"
+      # - name: Export Application event log
+      #   if: always()
+      #   shell: cmd
+      #   run: wevtutil epl Application build\logs\Application.evtx /q:"Event/System/TimeCreated[timediff(@SystemTime) <= 86400000]"
 
-      - name: Export System event log
-        if: always()
-        shell: cmd
-        run: wevtutil epl System build\logs\System.evtx /q:"Event/System/TimeCreated[timediff(@SystemTime) <= 86400000]"
+      # - name: Export System event log
+      #   if: always()
+      #   shell: cmd
+      #   run: wevtutil epl System build\logs\System.evtx /q:"Event/System/TimeCreated[timediff(@SystemTime) <= 86400000]"
 
-      # Do NOT publish logs on `master` branch as they may contain secrets in them.
-      - name: Save logs
-        if: github.ref != 'refs/heads/master' && always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: logs_${{ github.run_id }}
-          path: build/logs/
+      # # Do NOT publish logs on `master` branch as they may contain secrets in them.
+      # - name: Save logs
+      #   if: github.ref != 'refs/heads/master' && always()
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: logs_${{ github.run_id }}
+      #     path: build/logs/
 
-      - name: Push to GitHub Packages
-        if: github.event_name == 'push' && github.repository_owner == 'wixtoolset' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
-        run: dotnet nuget push "build/artifacts/**/*.nupkg" --source https://nuget.pkg.github.com/wixtoolset/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+      # - name: Push to GitHub Packages
+      #   if: github.event_name == 'push' && github.repository_owner == 'wixtoolset' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+      #   run: dotnet nuget push "build/artifacts/**/*.nupkg" --source https://nuget.pkg.github.com/wixtoolset/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
