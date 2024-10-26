@@ -62,8 +62,7 @@ jobs:
 
       - name: Build wix6
         shell: cmd
-        # run: ./src/build_official.cmd
-        run: echo Halo Welt! >test.txt
+        run: ./src/build_official.cmd
         env:
           NuGetAudit: false
           RuntimeTestsEnabled: false
