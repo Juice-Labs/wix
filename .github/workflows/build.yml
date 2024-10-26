@@ -116,11 +116,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          title: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
           make_latest: true
+          fail_on_unmatched_files: true
           files: |
-            build/artifacts/wix.6.0.0-build.50.nupkg
-            build/artifacts/WixToolset.BootstrapperApplications.6.0.0-build.50.nupkg
-            build/artifacts/WixToolset.Firewall.6.0.0-build.50.nupkg
-            build/artifacts/WixToolset.UI.6.0.0-build.50.nupkg
-            build/artifacts/WixToolset.Util.6.0.0-build.50.nupkg
+            build/artifacts/*.nupkg
