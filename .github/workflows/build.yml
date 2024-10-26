@@ -117,7 +117,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           name: ${{ github.ref_name }}
-          make_latest: true
+          draft: false
+          prerelease: false
+          make_latest: true          
           fail_on_unmatched_files: true
           files: |
             build/artifacts/*.nupkg
